@@ -1,0 +1,90 @@
+--ALTER DATABASE [PowerBIHyperScaleDemo_v1] SET QUERY_STORE CLEAR;
+--ALTER DATABASE [PowerBIHyperScaleDemo] SET QUERY_STORE CLEAR;
+
+----
+-- Clean Buffer pool and proc cache
+-----
+DBCC FREEPROCCACHE
+DBCC DROPCLEANBUFFERS
+------------------------------
+SELECT 
+TOP (1000001) [t3].[Day] AS [c35],[t3].[Fiscal Month Label] AS [c43],[t3].[Fiscal Year Label] AS [c45],[t4].[Employee] AS [c50],
+COUNT_BIG([t6].[Salesperson Key])
+ AS [a0]
+FROM 
+(
+((
+select [$Table].[Sale Key] as [Sale Key],
+    [$Table].[City Key] as [City Key],
+    [$Table].[Customer Key] as [Customer Key],
+    [$Table].[Bill To Customer Key] as [Bill To Customer Key],
+    [$Table].[Stock Item Key] as [Stock Item Key],
+    [$Table].[Invoice Date Key] as [Invoice Date Key],
+    [$Table].[Delivery Date Key] as [Delivery Date Key],
+    [$Table].[Salesperson Key] as [Salesperson Key],
+    [$Table].[WWI Invoice ID] as [WWI Invoice ID],
+    [$Table].[Description] as [Description],
+    [$Table].[Package] as [Package],
+    [$Table].[Quantity] as [Quantity],
+    [$Table].[Unit Price] as [Unit Price],
+    [$Table].[Tax Rate] as [Tax Rate],
+    [$Table].[Total Excluding Tax] as [Total Excluding Tax],
+    [$Table].[Tax Amount] as [Tax Amount],
+    [$Table].[Profit] as [Profit],
+    [$Table].[Total Including Tax] as [Total Including Tax],
+    [$Table].[Total Dry Items] as [Total Dry Items],
+    [$Table].[Total Chiller Items] as [Total Chiller Items],
+    [$Table].[Lineage Key] as [Lineage Key]
+from [Fact].[Sale] as [$Table]
+) AS [t6]
+
+ INNER JOIN 
+
+(
+select [$Table].[Date] as [Date],
+    [$Table].[Day Number] as [Day Number],
+    [$Table].[Day] as [Day],
+    [$Table].[Month] as [Month],
+    [$Table].[Short Month] as [Short Month],
+    [$Table].[Calendar Month Number] as [Calendar Month Number],
+    [$Table].[Calendar Month Label] as [Calendar Month Label],
+    [$Table].[Calendar Year] as [Calendar Year],
+    [$Table].[Calendar Year Label] as [Calendar Year Label],
+    [$Table].[Fiscal Month Number] as [Fiscal Month Number],
+    [$Table].[Fiscal Month Label] as [Fiscal Month Label],
+    [$Table].[Fiscal Year] as [Fiscal Year],
+    [$Table].[Fiscal Year Label] as [Fiscal Year Label],
+    [$Table].[ISO Week Number] as [ISO Week Number]
+from [Dimension].[Date] as [$Table]
+) AS [t3] on 
+(
+[t6].[Delivery Date Key] = [t3].[Date]
+)
+)
+
+
+ INNER JOIN 
+
+(
+select [$Table].[Employee Key] as [Employee Key],
+    [$Table].[WWI Employee ID] as [WWI Employee ID],
+    [$Table].[Employee] as [Employee],
+    [$Table].[Preferred Name] as [Preferred Name],
+    [$Table].[Is Salesperson] as [Is Salesperson],
+    [$Table].[Photo] as [Photo],
+    [$Table].[Valid From] as [Valid From],
+    [$Table].[Valid To] as [Valid To],
+    [$Table].[Lineage Key] as [Lineage Key]
+from [Dimension].[Employee] as [$Table]
+) AS [t4] on 
+(
+[t6].[Salesperson Key] = [t4].[Employee Key]
+)
+)
+
+WHERE 
+(
+[t4].[Is Salesperson] = 1
+)
+
+GROUP BY [t3].[Day],[t3].[Fiscal Month Label],[t3].[Fiscal Year Label],[t4].[Employee] 
