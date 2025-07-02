@@ -92,14 +92,5 @@ These SQL scripts provide ready-to-use queries and views to analyze the imported
 - Managed Instance troubleshooting
 - Power BI dashboards based on historical performance
 
----
 
-## 🚀 Example
-
-```powershell
-# On each environment:
-.\PerfCollector.ps1
-
-# In your central server:
-.\PerfCollectorAnalyzer.ps1 -Folder "C:\\P
 
